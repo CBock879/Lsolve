@@ -6,3 +6,5 @@ Dmatrix.py~
 .Dmatrix.py.swp
 .darray.py.swp
 solver.py~
+__pycache__/Dmatrix.cpython-37.pyc
+*.swo
