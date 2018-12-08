@@ -1,0 +1,8 @@
+Todo List
+solver.py
+Turn into object
+equation defined boundry conditions
+visualization for the boundry conditions
+dmatrix.py 
+add function to delete unneeded values
+	add map function do data can be accuratly put pack together
