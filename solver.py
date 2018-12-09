@@ -1,39 +1,39 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from Dmatrix import dmat
+from Pboundry import Pbound
+
 # b,h base and height of retangular region
-b =10 
-h =10  
+b = 8 
+h =  8
 
 #parametric equation for boundry
-pb_steps = 20            
-p = np.linspace(0,np.pi*2,pb_steps )
-yb = np.sin(p)*2+4
-xb = np.cos(p)*2+4
-zb = 1
-    
-x = 20 # X resoltion
+pb_steps = 200
+xb, yb, zb = Pbound(pb_steps)
+
+x = 50 # X resoltion
 dy = b/x
 
-y= 20 # y resolution
+y = 50 # y resolution
 dx = h/ y
-print(dx)
 
 #a is tuple of x,y coordanates
 def map(a,b):
     p = int( np.floor(a / dx))
     q = int( np.floor(b / dy))
-    return(p,q)
 
+    return(p,q)
 
 # currently set up to be Prandtal stress function
 #defines region
 Region = dmat(x,y)
 
+#plots internal boundries
 plt.plot(xb,yb) 
 
 # edge boundries on the top bottom left and right sides
-solmat = np.zeros((x,y))
+solmat = np.ones((x,y))
+solmat = np.negative(solmat)
 solmat[:,0] = 0
 solmat[:,y-1] = 0   
 solmat[0,:]  = 0
@@ -70,6 +70,8 @@ for i in range(0,y):
 #parametric boundry
 sum_vals = 0  
 num_vals = 1
+
+#placeholders 
 last_i = x+3 
 last_j = y+3 
 for i in range(0,pb_steps-1):
@@ -77,15 +79,16 @@ for i in range(0,pb_steps-1):
     if ((i_pb > x & j_pb > y)):
           print("x") 
     else:
-        print(i_pb)
+        #print(i_pb)
 
+        #if there are multiple points of parametric boundry in single elelment then it averages it 
         if(last_i==last_i & last_j==j_pb):
-            sum_vals += zb
+            sum_vals += zb[i]
             num_vals += 1
 
         else:
             num_vals = 1
-            sum_vals = zb 
+            sum_vals = zb[i] 
             Region.dirichelt(i_pb,j_pb) 
 
         solmat[i_pb,j_pb] =  sum_vals/num_vals
@@ -94,13 +97,13 @@ for i in range(0,pb_steps-1):
 
         
 
-#gets differential matrix 
+#gets total region matrix 
 A = Region.outmatrix()
 
 #inverts differential matrix
 A = np.linalg.inv(A)
 
-print(solmat)
+#print(solmat)
 #reshapes matrix to be solvable
 solmat  = solmat.reshape((x+1)*(y+1))
 
@@ -108,18 +111,29 @@ np.set_printoptions(threshold = np.nan)
 #solves the matrix 
 sols = np.matmul(A,solmat)
 
+np.set_printoptions(precision  = 2, suppress = True)
+
 #reshapes solutions and graphs
 sols = sols.reshape(x+1,y+1)
 sols = np.matrix.transpose(sols)
+
+#for i in range(x):
+#    for j in range(y):
+#        if( (sols[i,j] > 0)):
+#            a = 0
+#
+#        else:
+#            print("help")
 
 px = np.linspace(0,b,x+1)
 py = np.linspace(0,h,y+1)
 
 plt.gca().set_aspect("equal")
 
-plt.contourf(px,py, sols,10,antialiased = False)
 
+graph = plt.contour(px,py, sols,10,vmin=-0.00001)
+plt.colorbar(graph)
 np.set_printoptions(precision=1)
-print(sols)
+#print(sols)
 
 plt.show()

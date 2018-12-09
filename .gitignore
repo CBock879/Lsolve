@@ -8,3 +8,9 @@ Dmatrix.py~
 solver.py~
 __pycache__/Dmatrix.cpython-37.pyc
 *.swo
+.Dmatrix.py.swn
+*.swm
+*.swk
+.solver.py.swn
+.solver.py.swl
+__pycache__/Pboundry.cpython-37.pyc
