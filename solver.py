@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import linalg
 import matplotlib.pyplot as plt
 from Dmatrix import dmat
 from Pboundry import Pbound
@@ -9,22 +10,24 @@ h =  8
 
 #parametric equation for boundry
 pb_steps = 200
-xb, yb, zb = Pbound(pb_steps)
+xb, yb, zb = Pbound(pb_steps,0)
 
 x = 50 # X resoltion
 dy = b/x
 
 y = 50 # y resolution
 dx = h/ y
-
-#a is tuple of x,y coordanates
+#Param a: x location to be mapped to the matrix
+#Param b: y location to be mapped to the matrix 
+#maps xy coordanates into array indices (p,q) for the corresponding element
 def map(a,b):
-    p = int( np.floor(a / dx))
-    q = int( np.floor(b / dy))
+    p = int( np.floor(a / dx ))
+    q = int( np.floor(b / dy ))
+    #print(p,q) 
 
     return(p,q)
 
-# currently set up to be Prandtal stress function
+#currently set up to be Prandtal stress function
 #defines region
 Region = dmat(x,y)
 
@@ -71,12 +74,12 @@ for i in range(0,y):
 sum_vals = 0  
 num_vals = 1
 
-#placeholders 
+#values that store index of last eleement mapped 
 last_i = x+3 
 last_j = y+3 
 for i in range(0,pb_steps-1):
     i_pb , j_pb = map(xb[i],yb[i])
-    if ((i_pb > x & j_pb > y)):
+    if ((i_pb > x or j_pb > y)):
           print("x") 
     else:
         #print(i_pb)
@@ -101,7 +104,7 @@ for i in range(0,pb_steps-1):
 A = Region.outmatrix()
 
 #inverts differential matrix
-A = np.linalg.inv(A)
+A = linalg.inv(A)
 
 #print(solmat)
 #reshapes matrix to be solvable
@@ -128,9 +131,8 @@ sols = np.matrix.transpose(sols)
 px = np.linspace(0,b,x+1)
 py = np.linspace(0,h,y+1)
 
+#graphs
 plt.gca().set_aspect("equal")
-
-
 graph = plt.contour(px,py, sols,10,vmin=-0.00001)
 plt.colorbar(graph)
 np.set_printoptions(precision=1)
