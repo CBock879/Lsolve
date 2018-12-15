@@ -8,14 +8,16 @@ from Pboundry import Pbound
 b = 8 
 h =  8
 
+vector_field = False
+
 #parametric equation for boundry
 pb_steps = 200
 xb, yb, zb = Pbound(pb_steps,0)
 
-x = 50 # X resoltion
+x = 30 # X resoltion
 dy = b/x
 
-y = 50 # y resolution
+y = 30 # y resolution
 dx = h/ y
 #Param a: x location to be mapped to the matrix
 #Param b: y location to be mapped to the matrix 
@@ -41,7 +43,6 @@ solmat[:,0] = 0
 solmat[:,y-1] = 0   
 solmat[0,:]  = 0
 solmat[x-1,:] =0  
-
 
 #sets up inital matrix
 for i in range(1,x-1):
@@ -79,12 +80,7 @@ last_i = x+3
 last_j = y+3 
 for i in range(0,pb_steps-1):
     i_pb , j_pb = map(xb[i],yb[i])
-    if ((i_pb > x or j_pb > y)):
-          print("x") 
-    else:
-        #print(i_pb)
-
-        #if there are multiple points of parametric boundry in single elelment then it averages it 
+    if (True!=(i_pb > x or j_pb > y)):
         if(last_i==last_i & last_j==j_pb):
             sum_vals += zb[i]
             num_vals += 1
@@ -97,45 +93,35 @@ for i in range(0,pb_steps-1):
         solmat[i_pb,j_pb] =  sum_vals/num_vals
         last_i,last_j = i_pb, j_pb
 
-
-        
-
-#gets total region matrix 
+#gets matrix of the entire region
 A = Region.outmatrix()
-
-#inverts differential matrix
-A = linalg.inv(A)
 
 #print(solmat)
 #reshapes matrix to be solvable
 solmat  = solmat.reshape((x+1)*(y+1))
 
-np.set_printoptions(threshold = np.nan)
-#solves the matrix 
-sols = np.matmul(A,solmat)
-
-np.set_printoptions(precision  = 2, suppress = True)
+#solves the region
+sols =  linalg.solve(A,solmat)
 
 #reshapes solutions and graphs
 sols = sols.reshape(x+1,y+1)
 sols = np.matrix.transpose(sols)
-
-#for i in range(x):
-#    for j in range(y):
-#        if( (sols[i,j] > 0)):
-#            a = 0
-#
-#        else:
-#            print("help")
 
 px = np.linspace(0,b,x+1)
 py = np.linspace(0,h,y+1)
 
 #graphs
 plt.gca().set_aspect("equal")
-graph = plt.contour(px,py, sols,10,vmin=-0.00001)
-plt.colorbar(graph)
-np.set_printoptions(precision=1)
+function = plt.contour(px,py, sols,5,vmin=-0.00001)
+plt.colorbar(function)
+
+if (vector_field):
+    #converts px and py into mesh grid for vectors
+    px, py = np.meshgrid(px,py) 
+    gradient = np.gradient(sols)
+    plt.quiver(px,py,gradient[0],gradient[1])
+    
+#np.set_printoptions(precision=1)
 #print(sols)
 
 plt.show()
