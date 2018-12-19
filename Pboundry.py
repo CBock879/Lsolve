@@ -40,5 +40,9 @@ def as_lambda(xpr):
     function = sp.lambdify(p,xpr)
     return function
 
-#def normal(
-    
+def normal(dx,dy,z): 
+	dd = np.array([dx,dy,0])
+	v = np.array([0,0,z])
+	n = np.norm(np.cross(dd,v))
+	return n	
+

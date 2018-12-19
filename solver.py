@@ -2,8 +2,9 @@ import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as plt
 from Dmatrix import dmat
+from Dmatrix import map
 from Pboundry import Pbound
-
+`
 # b,h base and height of retangular region
 b = 8 
 h =  8
@@ -23,6 +24,7 @@ dx = h/ y
 #Param b: y location to be mapped to the matrix 
 #maps xy coordanates into array indices (p,q) for the corresponding element
 def map(a,b):
+
     p = int( np.floor(a / dx ))
     q = int( np.floor(b / dy ))
     #print(p,q) 
@@ -55,7 +57,6 @@ y = y-1
 
 #boundry conditions
 for i in range(0,x+1):
-
     #top boundry
     Region.dmatrix[i][0][i][0] = 1
     #Region.dmatrix[i][0][i][1] = -1
