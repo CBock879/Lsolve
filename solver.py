@@ -2,9 +2,8 @@ import numpy as np
 from scipy import linalg
 import matplotlib.pyplot as plt
 from Dmatrix import dmat
-from Dmatrix import map
 from Pboundry import Pbound
-`
+
 # b,h base and height of retangular region
 b = 8 
 h =  8
@@ -33,7 +32,7 @@ def map(a,b):
 
 #currently set up to be Prandtal stress function
 #defines region
-Region = dmat(x,y)
+Region = dmat(x,y,h,b)
 
 #plots internal boundries
 plt.plot(xb,yb) 
@@ -79,8 +78,14 @@ num_vals = 1
 #values that store index of last eleement mapped 
 last_i = x+3 
 last_j = y+3 
+
+dx = np.gradient(xb)
+dy = np.gradient(yb)
+nx,ny = normal(dx,dy,1)
+
 for i in range(0,pb_steps-1):
     i_pb , j_pb = map(xb[i],yb[i])
+    
     if (True!=(i_pb > x or j_pb > y)):
         if(last_i==last_i & last_j==j_pb):
             sum_vals += zb[i]
@@ -89,7 +94,10 @@ for i in range(0,pb_steps-1):
         else:
             num_vals = 1
             sum_vals = zb[i] 
-            Region.dirichelt(i_pb,j_pb) 
+            
+            #nuemann boundry condition
+            Region.nuemann(i_pd,j_pb,nx[i],ny[i])
+
 
         solmat[i_pb,j_pb] =  sum_vals/num_vals
         last_i,last_j = i_pb, j_pb

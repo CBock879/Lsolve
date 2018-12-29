@@ -12,11 +12,12 @@ def Pbound(steps,is_closed):
     p = sp.symbols('p')
 
     #ype = y parametric function expression
-    yin = "sin(p)*2+4" 
-    y = as_lambda(yin)
+    yin = sp.sin(p)* 2+ 4
+    yp = sp.lambdify(p,yin)
+    y = yp(pr)
+
     
     #yp =np.random.rand(steps) * 7.7
-    yp = y(pr)
 
     xpe = sp.cos(p)*2+4
     xb = sp.lambdify(p,xpe)
@@ -38,11 +39,12 @@ def as_lambda(xpr):
     p = sp.symbols('p')
     parse_expr(xpr)
     function = sp.lambdify(p,xpr)
-    return function
+    return (function)
 
 def normal(dx,dy,z): 
-	dd = np.array([dx,dy,0])
-	v = np.array([0,0,z])
-	n = np.norm(np.cross(dd,v))
-	return n	
-
+    dd = np.array([dx,dy,0])
+    v = np.array([0,0,z])
+    n = np.norm(np.cross(dd,v))
+    nx = n[0]
+    ny = n[1]
+    return (nx,ny) 
