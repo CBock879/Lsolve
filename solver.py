@@ -20,16 +20,6 @@ dx = b/x
 y = 80 # y resolution
 dy = h/ y
  
-#Param a: x location to be mapped to the matrix
-#Param b: y location to be mapped to the matrix 
-#maps xy coordanates into array indices (p,q) for the corresponding element
-def map(a,b):
-
-    p =  int(np.floor(a / dx ))
-    q =  int(np.floor(b / dy ))
-    #print(p,q) 
-
-    return(p,q)
 
 #currently set up to be Prandtal stress function
 #defines region
@@ -73,65 +63,6 @@ for i in range(0,x):
     Region.dmatrix[i][y][i][y] = 1
     #Region.dmatrix[i][y][i-1][y] = -1
     #Region.dmatrix[i][y][i][y-1] = -1
-
-#parametric boundry
-sum_vals = 0  
-num_vals = 1
-
-#values that store index of last eleement mapped 
-last_i = x+3 
-last_j = y+3 
-
-p_dx = np.gradient(xb)
-p_dy = np.gradient(yb)
-local_dx = 0
-local_dy = 0
-for i in range(0,pb_steps-1):
-
-    i_pb , j_pb = map(xb[i],yb[i])
-
-    if (True!=(i_pb > x or j_pb > y)):
-        if(last_i==last_i & last_j==j_pb):
-            local_dx += p_dx[i]
-            local_dy += p_dy[i]
-            
-            num_vals += 1
-            nx , ny = normal(local_dx/num_vals,local_dy/num_vals,1)
-            Region.nuemann(i_pb,j_pb,nx,ny)
-
-        else:
-            num_vals = 1
-            local_dx = p_dx[i]
-            local_dy = p_dy[i] 
-            nx , ny = normal(local_dx/num_vals,local_dy/num_vals,1)
-            #print(nx,ny,i_pb,j_pb)
-            Region.nuemann(i_pb,j_pb,nx,ny)
-            #nuemann boundry condition
-
-        solmat[i_pb,j_pb] = 0 
-        last_i,last_j = i_pb, j_pb
-    
-# TODO move to the DMatrix file
-#for i in range(0,pb_steps-1):
-#    i_pb , j_pb = map(xb[i],yb[i])
-#
-#    if (True!=(i_pb > x or j_pb > y)):
-#        if(last_i==last_i & last_j==j_pb):
-#            sum_vals += zb[i]
-#            num_vals += 1
-#
-#        else:
-#            num_vals = 1
-#            sum_vals = zb[i] 
-#            
-#            #dirichet boundry condition
-#            Region.dirichlet(i_pd,j_pb,)
-#
-#
-#        solmat[i_pb,j_pb] =  sum_vals/num_vals
-#        last_i,last_j = i_pb, j_pb
-#
-#gets matrix of the entire region
 A = Region.outmatrix()
 
 #print(solmat)

@@ -1,8 +1,6 @@
 import numpy as np
 import sympy as sp
 from sympy.parsing.sympy_parser import parse_expr
-#container file for parametric boundry functions
-#TODO allow for user to input own internal boundries at runtime
 """
 """
 class  
@@ -44,7 +42,11 @@ class
          return(xp,yp,zp)
      def generate(self)
      """
-     generates the points for the the parametrix function
+     generates the points for the parametric function
+
+     returns:
+        x_list: list of x coordantes
+        y_list: list of y coordanates
 
      """
 
